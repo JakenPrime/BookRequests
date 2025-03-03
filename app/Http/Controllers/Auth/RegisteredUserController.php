@@ -11,15 +11,34 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Laravel\Socialite\Facades\Socialite;
 
 class RegisteredUserController extends Controller
-{
+{   
     /**
-     * Display the registration view.
+     * Call Azure AD for auth
      */
-    public function create(): View
+    public function azure(){
+        return Socialite::driver('azure')->redirect();
+    }
+    /**
+     * Login in/ create user from AD.
+     */
+    public function create()
     {
-        return view('auth.register');
+        $adUser = Socialite::driver('azure')->user();
+        dd($adUser);
+        $name = explode(', ', $adUser->name);
+        $user = User::firstOrCreate(['email' => $adUser->email],
+            [
+                'first_name' => $name[1],
+                'last_name' => $name[0],
+                'email' => $adUser->email,
+                'password' => Hash::make('random'),
+            ]
+            );
+        Auth::login($user);
+        return redirect(route('dashboard', absolute: false));
     }
 
     /**
