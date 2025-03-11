@@ -16,6 +16,9 @@ Route::middleware('guest')->group(function () {
     Route::get('login/AD', [RegisteredUserController::class, 'azure'])
         ->name('azure');
 
+    Route::get('login/dev', [RegisteredUserController::class, 'dev'])
+        ->name('dev');
+
     Route::get('callback', [RegisteredUserController::class, 'create'])
         ->name('register');
 

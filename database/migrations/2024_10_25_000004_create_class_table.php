@@ -11,24 +11,41 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('classes', function (Blueprint $table) {
+        Schema::create('courses', function (Blueprint $table) {
             $table->id();
-            $table->string('course');
-            $table->string('name');
-            $table->integer('students');
+            $table->string('course_id');
+            $table->string('name')->nullable();
+            $table->string('department')->nullable();
             $table->timestamps();
         });
 
-        Schema::create('user_classes', function(Blueprint $table){
+        Schema::create('classes', function(Blueprint $table){
             $table->id();
-            $table->integer('user_id');
-            $table->foreign('user_id')
+            $table->string('class_id')->nullable();
+
+            $table->integer('course_id');
+            $table->foreign('course_id')
+                ->references('id')
+                ->on('courses');
+
+            $table->integer('school_year');
+            $table->foreign('school_year')
+                ->references('id')
+                ->on('school_years'); 
+
+            $table->integer('teacher_id');
+            $table->foreign('teacher_id')
                 ->references('id')
                 ->on('users');
-            $table->integer('class_id');
-            $table->foreign('class_id')
-                ->references('id')
-                ->on('classes');
+
+            $table->integer('students');
+            $table->integer('max');
+            $table->timestamps();
+        });
+
+        Schema::create('school_years', function(Blueprint $table){
+            $table->id();
+            $table->string('year');
             $table->timestamps();
         });
 
@@ -39,8 +56,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_classes');
+        Schema::dropIfExists('school_years');
 
         Schema::dropIfExists('classes');
+
+        Schema::dropIfExists('courses');
     }
 };

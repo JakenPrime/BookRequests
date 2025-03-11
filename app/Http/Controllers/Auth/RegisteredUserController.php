@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\SyncClassesService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,12 +15,31 @@ use Illuminate\View\View;
 use Laravel\Socialite\Facades\Socialite;
 
 class RegisteredUserController extends Controller
-{   
+{  
+    /**
+     * @var SyncClassesService
+     */
+    private $classSync;
+
+     /**
+   *
+   * @param SyncClassesService $orders
+   */
+    public function __construct(SyncClassesService $classSync){
+        $this->classSync = $classSync;
+    }
+    
     /**
      * Call Azure AD for auth
      */
     public function azure(){
         return Socialite::driver('azure')->redirect();
+    }
+    //dev login
+    public function dev(){
+        $user = User::first();
+        Auth::login($user);
+        return redirect(route('dashboard', absolute: false));
     }
     /**
      * Login in/ create user from AD.
@@ -37,6 +57,7 @@ class RegisteredUserController extends Controller
                 'password' => Hash::make('random'),
             ]
             );
+        $this->classSync->readCSV($user->email, $user->id);
         Auth::login($user);
         return redirect(route('dashboard', absolute: false));
     }

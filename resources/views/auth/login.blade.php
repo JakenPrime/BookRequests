@@ -9,6 +9,11 @@
                     Log in
                 </x-primary-button>
             </a>
+            <a style="margin-left:40%" href="{{ route('dev') }}">
+                <x-primary-button>
+                    Dev
+                </x-primary-button>
+            </a>
         </div>
     </div>
 </x-guest-layout>
