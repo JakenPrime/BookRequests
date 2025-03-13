@@ -49,6 +49,6 @@ class SyncCourses extends Command
             ]);
         }
 
-        File::delete($this->filePath);
+        // File::delete($this->filePath);
     }
 }

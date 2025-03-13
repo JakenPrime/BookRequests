@@ -7,8 +7,9 @@
         <br>
         <select id="classSelect">
             <option value="0">Select your class</option>
-            <option value="2">Test Class 1</option>
-            <option value="5">Test Class 2</option>
+            @foreach ($classList as $class)
+                <option value="{{ $class->id }}">{{ $class->class_id }}: {{ $class->name }}</option>
+            @endforeach
         </select>
     </x-slot>
 
@@ -141,6 +142,13 @@
             let cs = document.getElementById("classSelect");
             return cs.value == 0;
         }
+
+        function getRoute(){
+            let cs = document.getElementById("classSelect");
+            $id = cs.value;
+            let route = "{{ route('orders', ':id') }}";
+            return route.replace(':id', $id);
+        }
         function submitRequest() {
             if(selectedList.length < 1){
                 alert("Book Request list is empty!");
@@ -150,6 +158,7 @@
                 alert("Class needs to be selected");
                 return;
             }
+            route = getRoute();
             const jsonList = JSON.stringify(selectedList);
             
             $.ajaxSetup({
@@ -158,7 +167,7 @@
                 }
             });
             $.ajax({
-                url: "{{ url('/orders') }}",
+                url: route,
                 data:{'bookList': jsonList},
                 type:'post',
                 success:  function (response) {

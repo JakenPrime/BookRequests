@@ -18,6 +18,7 @@
                             <th>Requester</th>
                             <th>Class</th>
                             <th>Ordered/Quantity</th>
+                            <th>Students/Max</th>
                         </tr>
                         <thead>
                         <tbody>
@@ -30,8 +31,9 @@
                                     </a>
                                 </td>
                                 <td>{{ $item->name }}</td>
-                                <td>class.data</td>
+                                <td>{{ $item->class }}</td>
                                 <td id="o/q:{{ $item->id }}">{{ $item->ordered }}/{{ $item->quantity }}</td>
+                                <td>{{ $item->students }}/{{ $item->max }}</td>
                             </tr> 
                             @endforeach
                         </tbody>

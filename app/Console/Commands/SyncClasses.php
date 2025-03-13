@@ -47,18 +47,23 @@ class SyncClasses extends Command
             if($teacher == null){
                 continue;
             }
-            $course = Courses::where('course_id', $data["Course ID"])->first();
+            $course = Courses::firstOrCreate(['course_id', $data["Course ID"]],
+                [
+                    'course_id' => $data["Course ID"],
+                    'name' => $data["Course"],
+                ]);
             $year = SchoolYears::firstOrCreate(['year' => $data["School Year"]],
                 [
                     'year' => $data["School Year"], 
                 ]);
-            Classes::firstOrCreate(['class_id' => $data["Class ID"], 'school_year'=> $year->id],
+            $students = explode(" ",$data["Student Counts"]);
+            Classes::updateOrCreate(['class_id' => $data["Class ID"], 'school_year'=> $year->id],
                 [
                     'class_id' => $data["Class ID"],
                     'course_id' => $course->id,
                     'school_year'=> $year->id,
                     'teacher_id' => $teacher->id,
-                    'students' => $data["Student Counts"],
+                    'students' => $students[0],
                     'max' => $data["Max Students"],
                 ]);
         }

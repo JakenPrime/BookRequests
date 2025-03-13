@@ -40,10 +40,11 @@ class OrderController extends Controller
         ]);
     }
 
-    public function store(OrderUpdateRequest $request) {
+    public function store(OrderUpdateRequest $request, string $id) {
         $user = $request->user();
         $newOrder = Orders::create([
             'user_id' => $user->id,
+            'class_id' => $id
         ]);
         foreach($request->all() as $key => $value){
             $data = json_decode($value);
