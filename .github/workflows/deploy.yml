@@ -1,0 +1,20 @@
+name: Deploy to prodution server
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}
+      - run: cd C:/nginx-1.26.3/BookRequests
+      - run: git checkout master
+      - run: git pull
+      - run: cp .env.example .env
+      - run: npm ci
+      - run: php artisan migrate
+      - run: nginx start
