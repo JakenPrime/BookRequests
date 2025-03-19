@@ -7,6 +7,7 @@ use App\Http\Requests\OrderUpdateRequest;
 use App\Models\BookRequests;
 use App\Models\Orders;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class OrderController extends Controller
@@ -34,8 +35,9 @@ class OrderController extends Controller
         }
     }
 
-    public function user(string $id): View{
-        return view('user-orders', [
+    public function user(): View{
+        $id = Auth::user()->id;
+        return view('dashboard', [
             'request' => $this->orders->getUserRequests($id),
         ]);
     }

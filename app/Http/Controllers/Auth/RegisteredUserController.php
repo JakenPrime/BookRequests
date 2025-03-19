@@ -47,7 +47,7 @@ class RegisteredUserController extends Controller
     public function create()
     {
         $adUser = Socialite::driver('azure')->user();
-        dd($adUser);
+        
         $name = explode(', ', $adUser->name);
         $user = User::firstOrCreate(['email' => $adUser->email],
             [
