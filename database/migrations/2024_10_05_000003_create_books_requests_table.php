@@ -31,6 +31,10 @@ return new class extends Migration
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users');
+            $table->integer('class_id');
+            $table->foreign('class_id')
+                ->references('id')
+                ->on('classes');
             $table->foreignId('notes_id')
                 ->nullable()
                 ->constrained('notes');

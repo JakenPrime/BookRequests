@@ -39,13 +39,18 @@ class BookRequestsRepository {
             if($order->status != 0 && $order->status != 1){
                 continue;
             }
+            $class = $order->class;
+            $course = $class->course;
             $obj = new stdClass();
             $user = $order->teacher;
 
             $obj->id = $order->id;
             $obj->name = $user->first_name ." ". $user->last_name;
+            $obj->class = $course->name;
             $obj->quantity = $item->quantity;
             $obj->ordered = $item->ordered;
+            $obj->students = $class->students;
+            $obj->max = $class->max;
 
             $this->request->push($obj);
         }

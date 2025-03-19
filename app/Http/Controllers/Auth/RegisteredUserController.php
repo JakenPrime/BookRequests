@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Services\SyncClassesService;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -11,15 +12,54 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Laravel\Socialite\Facades\Socialite;
 
 class RegisteredUserController extends Controller
-{
+{  
     /**
-     * Display the registration view.
+     * @var SyncClassesService
      */
-    public function create(): View
+    private $classSync;
+
+     /**
+   *
+   * @param SyncClassesService $orders
+   */
+    public function __construct(SyncClassesService $classSync){
+        $this->classSync = $classSync;
+    }
+    
+    /**
+     * Call Azure AD for auth
+     */
+    public function azure(){
+        return Socialite::driver('azure')->redirect();
+    }
+    //dev login
+    public function dev(){
+        $user = User::first();
+        Auth::login($user);
+        return redirect(route('dashboard', absolute: false));
+    }
+    /**
+     * Login in/ create user from AD.
+     */
+    public function create()
     {
-        return view('auth.register');
+        $adUser = Socialite::driver('azure')->user();
+        
+        $name = explode(', ', $adUser->name);
+        $user = User::firstOrCreate(['email' => $adUser->email],
+            [
+                'first_name' => $name[1],
+                'last_name' => $name[0],
+                'email' => $adUser->email,
+                'password' => Hash::make('random'),
+            ]
+            );
+        $this->classSync->readCSV($user->email, $user->id);
+        Auth::login($user);
+        return redirect(route('dashboard', absolute: false));
     }
 
     /**

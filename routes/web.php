@@ -10,8 +10,8 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
+Route::get('/dashboard', function (OrderController $orders) {
+    return $orders->user();
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -29,7 +29,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/books/{id}', [BookController::class, 'delete'])->name('books.destroy');
 
     Route::get('/orders/{id?}', [OrderController::class, 'show'])->name('orders');
-    Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
+    Route::post('/orders/{id}', [OrderController::class, 'store'])->name('orders.store');
     Route::patch('/orders/{id}', [OrderController::class, 'update'])->name('orders.update');
 
     Route::get('/requests/{id}', [BookRequestController::class, 'show'])->name('requests');

@@ -61,6 +61,7 @@ class Orders extends Model
 
     protected $fillable = [
         'user_id',
+        'class_id',
     ];
 
     function bookRequests(): HasMany {
@@ -69,5 +70,9 @@ class Orders extends Model
 
     function teacher(): BelongsTo {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    function class(): BelongsTo {
+        return $this->belongsTo(Classes::class, 'class_id');
     }
 }

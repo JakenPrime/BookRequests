@@ -16,13 +16,6 @@ return new class extends Migration
             $table->mediumText('notes');
             $table->timestamps();
         });
-
-        Schema::create('school_year', function(Blueprint $table){
-            $table->id();
-            $table->string("year");
-            $table->timestamps();
-        });
-
     }
 
     /**
@@ -31,7 +24,5 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('notes');
-
-        Schema::dropIfExists('school_year');
     }
 };

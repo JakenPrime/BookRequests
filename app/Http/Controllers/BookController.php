@@ -4,16 +4,30 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BookUpdateRequest;
 use App\Models\Books;
+use App\Repositories\ClassRepository;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Auth;
 
 class BookController extends Controller
 {
+    /**
+     * @var ClassRepository
+     */
+    private $classes;
+
+    /**
+     * @param ClassRepository $classes
+     */
+    public function __construct(ClassRepository $classes) { 
+        $this->classes = $classes;
+    }
 
     public function show(): View
     {
         return view('books', [
             'bookList'=> Books::get(),
+            'classList' => $this->classes->getClasses(Auth::user()->id),
         ]);
     }
 

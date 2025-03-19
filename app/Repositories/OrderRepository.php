@@ -140,10 +140,13 @@ class OrderRepository
         foreach($orders as $item){
             $obj = new stdClass();
             $req = $item->bookRequests;
+            
+            $class = $item->class;
+            $course = $class->course;
 
             $obj->id = $item->id;
             $obj->status = $item->getStatus();
-            $obj->class = "class.data";
+            $obj->class = $course->name;
             $obj->titles = $req->count();
             $this->list->push($obj);
         }
